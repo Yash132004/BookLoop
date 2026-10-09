@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout | BookLoop{% endblock %}
+
+{% block content %}
+<section class="checkout-page">
+    <div class="checkout-heading">
+        <span class="eyebrow">One last step</span>
+        <h1>Checkout</h1>
+        <p>Confirm the book and where it should be sent.</p>
+    </div>
+
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-6">
+            <article class="card checkout-book-card">
+                <div class="row g-0">
+                    <div class="col-sm-4">
+                        {% if book.image %}
+                            <img class="checkout-book-image" src="{{ book.image.url }}" alt="Cover of {{ book.title }}">
+                        {% else %}
+                            <div class="checkout-book-image book-card-image-empty"><span>No cover image</span></div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="card-body">
+                            <h2 class="h5 fw-bold">{{ book.title }}</h2>
+                <p class="book-card-author mb-3">by {{ book.author }}</p>
+                            <dl class="checkout-book-details mb-0">
+                                <div><dt>Book price</dt><dd>₹{{ book.price|floatformat:2 }}</dd></div>
+                                <div><dt>Seller</dt><dd>{{ book.seller.get_full_name|default:book.seller.username }}</dd></div>
+                                <div><dt>Location</dt><dd>{{ book.location }}</dd></div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="col-lg-6">
+            <form method="post" class="card card-body checkout-form">
+                {% csrf_token %}
+                <h2 class="h5 fw-bold mb-3">Delivery details</h2>
+                <div class="mb-4">
+                    <label class="form-label" for="{{ form.shipping_address.id_for_label }}">{{ form.shipping_address.label }}</label>
+                    {{ form.shipping_address }}
+                    {% for error in form.shipping_address.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                </div>
+
+                <div class="checkout-total mb-4">
+                    <div><span>Book price</span><strong>₹{{ book.price|floatformat:2 }}</strong></div>
+                    <div><span>Shipping</span><strong>₹{{ shipping_cost|floatformat:2 }}</strong></div>
+                    <div class="checkout-grand-total"><span>Total</span><strong>₹{{ total_price|floatformat:2 }}</strong></div>
+                </div>
+
+                <p class="small text-secondary">Payment is not collected in this MVP. The seller will confirm your order.</p>
+                <button class="btn btn-brand btn-lg w-100" type="submit">Place order</button>
+                <a class="btn btn-link mt-2" href="{% url 'books:detail' book.pk %}">Back to book</a>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

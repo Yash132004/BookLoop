@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}BookLoop | Buy &amp; Sell Books Locally{% endblock %}
+
+{% block content %}
+    <section class="landing-hero rounded-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8 col-xl-7">
+                <span class="eyebrow">A local exchange for well-loved books</span>
+                <h1>Books deserve more than one reader.</h1>
+                <p class="hero-copy">Give a favorite book a second life and discover your next great read from people around you.</p>
+                <div class="d-flex flex-column flex-sm-row flex-wrap gap-3 mt-4">
+                    <a class="btn btn-brand btn-lg" href="{% url 'books:listing_list' %}">Explore Books <span aria-hidden="true">→</span></a>
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-hero-secondary btn-lg" href="{% url 'books:create' %}">Pass a Book Along</a>
+                    {% else %}
+                        <a class="btn btn-hero-secondary btn-lg" href="{% url 'core:login' %}">Pass a Book Along</a>
+                    {% endif %}
+                </div>
+                <p class="hero-note mb-0">Find it nearby. Read it. Keep the story moving.</p>
+            </div>
+            <div class="col-lg-4 col-xl-5 d-none d-lg-flex justify-content-center" aria-hidden="true">
+                <div class="book-stack">
+                    <div class="book book-one"><span>stories<br>nearby</span><i>BOOKLOOP EDITION</i></div>
+                    <div class="book book-two"><span>read<br>again</span><i>A SECOND LIFE</i></div>
+                    <div class="book book-three"><span>pass it<br>along</span><i>LOCAL READS</i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section py-5" aria-labelledby="features-heading">
+        <div class="section-heading mb-4">
+            <span class="eyebrow">A little more life between the covers</span>
+            <h2 id="features-heading">Good stories travel further together.</h2>
+        </div>
+        <div class="row g-3 g-lg-4">
+            <div class="col-md-4">
+                <article class="feature-card h-100">
+                    <span class="feature-number">01</span>
+                    <h3>Discover nearby</h3>
+                    <p>Browse books shared by readers in your locality.</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="feature-card h-100">
+                    <span class="feature-number">02</span>
+                    <h3>Pass it along</h3>
+                    <p>Give a book you have finished a welcoming next home.</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="feature-card h-100">
+                    <span class="feature-number">03</span>
+                    <h3>Read more, waste less</h3>
+                    <p>Keep useful books in circulation and find your next read.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works rounded-4" aria-labelledby="how-heading">
+        <div class="text-center mb-4">
+            <span class="eyebrow">A simple loop for every good read</span>
+            <h2 id="how-heading">From your shelf to someone’s next favorite.</h2>
+        </div>
+        <div class="steps-row">
+            <div class="step"><span>1</span><strong>List</strong></div>
+            <span class="step-arrow" aria-hidden="true">→</span>
+            <div class="step"><span>2</span><strong>Discover</strong></div>
+            <span class="step-arrow" aria-hidden="true">→</span>
+            <div class="step"><span>3</span><strong>Buy</strong></div>
+        </div>
+    </section>
+
+    {% if recommendations %}
+        <section class="recommendations-section" aria-labelledby="recommendations-heading">
+            <div class="section-heading section-heading-row">
+                <div>
+                    <span class="eyebrow">A few reads to explore</span>
+                    <h2 id="recommendations-heading">Recommended for You</h2>
+                </div>
+                <a class="text-link" href="{% url 'books:listing_list' %}">Explore all books <span aria-hidden="true">→</span></a>
+            </div>
+            {% with books=recommendations %}
+                {% include 'books/_results.html' %}
+            {% endwith %}
+        </section>
+    {% endif %}
+
+    <section class="home-sell-callout" aria-labelledby="sell-callout-heading">
+        <div>
+            <span class="eyebrow">Your shelf has another story</span>
+            <h2 id="sell-callout-heading">Ready to pass a book along?</h2>
+            <p>List a book and help it find its next reader nearby.</p>
+        </div>
+        {% if user.is_authenticated %}
+            <a class="btn btn-light btn-lg" href="{% url 'books:create' %}">Sell a Book <span aria-hidden="true">→</span></a>
+        {% else %}
+            <a class="btn btn-light btn-lg" href="{% url 'core:login' %}">Log in to sell <span aria-hidden="true">→</span></a>
+        {% endif %}
+    </section>
+{% endblock %}

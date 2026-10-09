@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Order placed | BookLoop{% endblock %}
+
+{% block content %}
+<section class="order-success card mx-auto">
+    <div class="card-body p-4 p-md-5">
+        <div class="success-mark" aria-hidden="true">✓</div>
+        <span class="eyebrow">Your order is in</span>
+        <h1 class="h2 fw-bold">Order placed successfully</h1>
+        <p class="text-secondary">The seller can now review and confirm your order.</p>
+
+        <dl class="order-summary">
+            <div><dt>Order ID</dt><dd>#{{ order.pk }}</dd></div>
+            <div><dt>Book</dt><dd>{{ order.book.title }}</dd></div>
+            <div><dt>Shipping cost</dt><dd>₹{{ order.shipping_cost|floatformat:2 }}</dd></div>
+            <div><dt>Total</dt><dd>₹{{ order.total_price|floatformat:2 }}</dd></div>
+            <div><dt>Status</dt><dd><span class="badge text-bg-warning">{{ order.get_status_display }}</span></dd></div>
+        </dl>
+
+        <a class="btn btn-brand" href="{% url 'orders:my_orders' %}">View My Orders</a>
+        <a class="btn btn-outline-brand ms-2" href="{% url 'books:listing_list' %}">Browse more books</a>
+    </div>
+</section>
+{% endblock %}

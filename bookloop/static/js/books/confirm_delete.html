@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ book.title }} | BookLoop{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="card card-body listing-form">
+        <span class="eyebrow">Remove a listing</span>
+        <h1 class="h3">Delete “{{ book.title }}”?</h1>
+        <p class="text-secondary">This will permanently remove your listing.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-danger" type="submit">Yes, delete listing</button>
+                <a class="btn btn-outline-brand" href="{% url 'books:detail' book.pk %}">Keep listing</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

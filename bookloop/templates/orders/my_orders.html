@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}My Orders | BookLoop{% endblock %}
+
+{% block content %}
+<section>
+    <div class="mb-4">
+        <span class="eyebrow">Your BookLoop purchases</span>
+        <h1 class="h2 fw-bold mb-1">My Orders</h1>
+        <p class="text-secondary mb-0">See your order status and purchase details.</p>
+    </div>
+
+    {% if orders %}
+        <div class="table-responsive card order-list-card">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Order</th>
+                        <th scope="col">Book</th>
+                        <th scope="col">Seller</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Shipping</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.pk }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2 order-book-cell">
+                                    {% if order.book.image %}
+                                        <img class="order-book-thumbnail" src="{{ order.book.image.url }}" alt="Cover of {{ order.book.title }}">
+                                    {% else %}
+                                        <div class="order-book-thumbnail order-book-thumbnail-empty" aria-label="No cover image">Book</div>
+                                    {% endif %}
+                                    <a class="order-book-link" href="{% url 'books:detail' order.book.pk %}">{{ order.book.title }}</a>
+                                </div>
+                            </td>
+                            <td>{{ order.book.seller.get_full_name|default:order.book.seller.username }}</td>
+                            <td>₹{{ order.total_price|floatformat:2 }}</td>
+                            <td>₹{{ order.shipping_cost|floatformat:2 }}</td>
+                            <td>
+                                {% if order.status == 'Pending' %}
+                                    <span class="badge text-bg-warning">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'Confirmed' %}
+                                    <span class="badge text-bg-primary">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'Shipped' %}
+                                    <span class="badge text-bg-info">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'Delivered' %}
+                                    <span class="badge text-bg-success">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'Cancelled' %}
+                                    <span class="badge text-bg-secondary">{{ order.get_status_display }}</span>
+                                {% else %}
+                                    <span class="badge text-bg-light border">{{ order.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ order.created_at|date:"M j, Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-books text-center py-5 px-3">
+            <h2 class="h4">No orders yet</h2>
+            <p class="text-secondary mb-3">When you buy a book, your order will appear here.</p>
+            <a class="btn btn-brand" href="{% url 'books:listing_list' %}">Browse Books</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

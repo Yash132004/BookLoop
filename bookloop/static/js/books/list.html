@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Books | BookLoop{% endblock %}
+
+{% block content %}
+<section class="mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
+        <div>
+            <span class="eyebrow">Find your next read nearby</span>
+            <h1 class="h2 fw-bold mb-1">Browse Books</h1>
+            <p class="text-secondary mb-0">Discover books listed by readers in your locality.</p>
+        </div>
+        {% if user.is_authenticated %}
+            <a class="btn btn-brand" href="/books/create/">Sell a Book</a>
+        {% endif %}
+    </div>
+
+    <form id="book-search-form" method="get" action="{% url 'books:listing_list' %}" class="browse-filters card card-body mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-6 col-lg-5">
+                <label class="form-label" for="book-search">Search books</label>
+                <input class="form-control" id="book-search" type="search" name="q" value="{{ search_query }}" placeholder="Try a title, author, or topic">
+            </div>
+            <div class="col-6 col-md-3 col-lg-3">
+                <label class="form-label" for="condition-filter">Condition</label>
+                <select class="form-select" id="condition-filter" name="condition">
+                    <option value="">Any condition</option>
+                    {% for value, label in conditions %}
+                        <option value="{{ value }}" {% if selected_condition|lower == value|lower %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2">
+                <label class="form-label" for="location-filter">Location</label>
+                <input class="form-control" id="location-filter" type="text" name="location" value="{{ selected_location }}" placeholder="e.g. Vadodara">
+            </div>
+            <div class="col-12 col-lg-2 d-flex gap-2">
+                <button class="btn btn-brand flex-grow-1" type="submit">Search</button>
+                <a id="book-search-clear" class="btn btn-outline-brand {% if not search_query and not selected_condition and not selected_location %}d-none{% endif %}" href="{% url 'books:listing_list' %}">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    <form id="book-image-search-form" method="post" action="{% url 'books:image_search' %}" class="browse-filters card card-body mb-4">
+        {% csrf_token %}
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-8">
+                <label class="form-label" for="book-image-search">Search by book cover</label>
+                <input class="form-control" id="book-image-search" type="file" name="image" accept="image/*" required>
+                <div class="form-text">Choose a JPEG, PNG, or WebP image up to 5 MB. Search uses available BookLoop listings.</div>
+            </div>
+            <div class="col-12 col-md-4">
+                <p class="form-text mb-0">Search starts automatically after you choose a cover.</p>
+            </div>
+        </div>
+    </form>
+
+    <p id="book-search-status" class="small text-secondary" role="status" aria-live="polite"></p>
+    <div id="book-results" data-search-url="{% url 'books:search' %}" data-image-search-url="{% url 'books:image_search' %}" aria-busy="false">
+        {% include 'books/_results.html' %}
+    </div>
+</section>
+{% endblock %}

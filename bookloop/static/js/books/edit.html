@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit {{ book.title }} | BookLoop{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-page-heading">
+        <span class="eyebrow">Keep your listing up to date</span>
+        <h1>Edit listing</h1>
+        <p>Update the details for <strong>{{ book.title }}</strong>.</p>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="card card-body listing-form">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+            </div>
+        {% endfor %}
+        {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+        <div class="d-flex flex-wrap gap-2 mt-2">
+            <button class="btn btn-brand" type="submit">Save changes</button>
+            <a class="btn btn-outline-brand" href="{% url 'books:detail' book.pk %}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

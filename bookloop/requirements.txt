@@ -1,0 +1,2 @@
+# Local semantic search; imports and model loading are lazy at runtime.
+fastembed>=0.7,<1.0

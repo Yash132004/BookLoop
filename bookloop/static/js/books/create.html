@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Sell a Book | BookLoop{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-page-heading">
+        <span class="eyebrow">Give a good book a new home</span>
+        <h1>Create a listing</h1>
+        <p>Your listing will be connected to your account automatically.</p>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="card card-body listing-form">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+            </div>
+        {% endfor %}
+        {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+        <div class="d-flex flex-wrap gap-2 mt-2">
+            <button class="btn btn-brand" type="submit">Create listing</button>
+            <a class="btn btn-outline-brand" href="{% url 'books:my_listings' %}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
